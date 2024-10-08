@@ -10,6 +10,9 @@ def main():
              [0,1,0,1,0,1,0,1],
              [1,0,1,0,1,0,1,0]]
     
+    white_check = []
+    black_check = []
+    
     window = tk.Tk()
     window.geometry("800x600")
     window.title("checker")
@@ -24,7 +27,7 @@ def main():
             else:
                 canvas.create_rectangle((0+(62.5*j),0+(62.5*i),62.5+(62.5*j),62.5+(62.5*i)),fill = "#974F08",width=0)
                 
-    
+    canvas.create_oval((3,3,60,60), fill = "black")
     
     window.mainloop()
     

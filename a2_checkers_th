@@ -19,16 +19,28 @@ def main():
     
     canvas = tk.Canvas(window, height= 500, width=500, bg="black")
     canvas.grid(padx=20,pady=50)
-    # canvas.create_rectangle((0,62.5,62.5,62.5*2),fill = "white",width=0)
+    
+    # set-up game
     for i in range(0,len(board)):
         for j in range(0,len(board[i])):
             if (board[i][j] == 0):
+                # white pattern
                 canvas.create_rectangle((0+(62.5*j),0+(62.5*i),62.5+(62.5*j),62.5+(62.5*i)),fill = "#FFDFBD",width=0)
-            else:
-                canvas.create_rectangle((0+(62.5*j),0+(62.5*i),62.5+(62.5*j),62.5+(62.5*i)),fill = "#974F08",width=0)
                 
-    canvas.create_oval((3,3,60,60), fill = "black")
-    
+            else:
+                # black pattern
+                canvas.create_rectangle((0+(62.5*j),0+(62.5*i),62.5+(62.5*j),62.5+(62.5*i)),fill = "#B56000",width=0)
+                # create checkers
+                if (i < 2):
+                    black = canvas.create_oval((2+(62.5*j),2+(62.5*i),61+(62.5*j),61+(62.5*i)), fill = "black", outline="white")
+                    board[i][j] = 2
+                    black_check.append(black)
+                    
+                elif (i<8 and i>5):
+                    white = canvas.create_oval((2+(62.5*j),2+(62.5*i),61+(62.5*j),61+(62.5*i)), fill = "white")
+                    board[i][j] = 3
+                    white_check.append(white)
+                    
     window.mainloop()
     
 

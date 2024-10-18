@@ -1,17 +1,18 @@
 import tkinter as tk
 
 def main():
-    board = [[0,1,0,1,0,1,0,1],
-             [1,0,1,0,1,0,1,0],
+    board = [[0,2,0,2,0,2,0,2],
+             [2,0,2,0,2,0,2,0],
              [0,1,0,1,0,1,0,1],
              [1,0,1,0,1,0,1,0],
              [0,1,0,1,0,1,0,1],
              [1,0,1,0,1,0,1,0],
-             [0,1,0,1,0,1,0,1],
-             [1,0,1,0,1,0,1,0]]
+             [0,3,0,3,0,3,0,3],
+             [3,0,3,0,3,0,3,0]]
     
     white_check = []
     black_check = []
+    area_moving = []
     
     window = tk.Tk()
     window.geometry("800x600")
@@ -20,7 +21,7 @@ def main():
     canvas = tk.Canvas(window, height= 500, width=500, bg="black")
     canvas.grid(padx=20,pady=50)
     
-    # set-up game
+    # SET UP GAME 
     for i in range(0,len(board)):
         for j in range(0,len(board[i])):
             if (board[i][j] == 0):
@@ -29,20 +30,75 @@ def main():
                 
             else:
                 # black pattern
-                canvas.create_rectangle((0+(62.5*j),0+(62.5*i),62.5+(62.5*j),62.5+(62.5*i)),fill = "#B56000",width=0)
+                area = Use_area(canvas,0+(62.5*j),0+(62.5*i),62.5+(62.5*j),62.5+(62.5*i),i,j)
+                area_moving.append(area)
                 # create checkers
-                if (i < 2):
-                    black = canvas.create_oval((2+(62.5*j),2+(62.5*i),61+(62.5*j),61+(62.5*i)), fill = "black", outline="white")
-                    board[i][j] = 2
+                if (board[i][j] == 2):
+                    black = Black_Checker(canvas,2+(62.5*j),2+(62.5*i),61+(62.5*j),61+(62.5*i),"black","white",i,j)
                     black_check.append(black)
                     
-                elif (i<8 and i>5):
-                    white = canvas.create_oval((2+(62.5*j),2+(62.5*i),61+(62.5*j),61+(62.5*i)), fill = "white")
-                    board[i][j] = 3
+                elif (board[i][j] == 3):
+                    white = White_Checker(canvas,2+(62.5*j),2+(62.5*i),61+(62.5*j),61+(62.5*i), "white", "black",i,j)
                     white_check.append(white)
-                    
-    window.mainloop()
     
+    # PROGRESS
+    a = canvas.bind('<Button>',lambda event:moving_white(event,white_check))
+    # canvas.bind('<Button>',lambda event:moving_black(event,black_check))
+    # w_turn = canvas.bind('<Button>',lambda event:moving_white(event,white_check))
+    
+        
+    
+    
+    window.mainloop()
+
+def moving_black(event,bc):
+    for i in range(0,len(bc)):
+        if ((event.x > bc[i].x1 and event.x < bc[i].x2) and (event.y > bc[i].y1 and event.y < bc[i].y2)):
+            print(f"x:{event.x} y:{event.y}")
+            print(bc[i].i,bc[i].j)
+            
+            
+def moving_white(event,wc):
+    for i in range(0,len(wc)):
+        if ((event.x > wc[i].x1 and event.x < wc[i].x2) and (event.y > wc[i].y1 and event.y < wc[i].y2)):
+            print(f"x:{event.x} y:{event.y}")
+            print(wc[i].i,wc[i].j)
+            
+class Black_Checker(tk.Canvas):
+    def __init__(self, parent,x1,y1,x2,y2,color,line,i,j):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+        self.i = i
+        self.j = j
+        
+        super().__init__(master=parent)
+        parent.create_oval((x1,y1,x2,y2), fill = color, outline=line)
+        
+class White_Checker(tk.Canvas):
+    def __init__(self, parent,x1,y1,x2,y2,color,line,i,j):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+        self.i = i
+        self.j = j
+        
+        super().__init__(master=parent)
+        parent.create_oval((x1,y1,x2,y2), fill = color, outline=line)
+
+class Use_area(tk.Canvas):
+    def __init__(self, parent,x1,y1,x2,y2,i,j):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+        self.i = i
+        self.j = j  
+        
+        super().__init__(master=parent)
+        parent.create_rectangle((x1,y1,x2,y2), fill = "#B56000", width=0)     
 
 if __name__=="__main__": 
     main() 

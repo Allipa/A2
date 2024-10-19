@@ -42,28 +42,104 @@ def main():
                     white_check.append(white)
     
     # PROGRESS
-    a = canvas.bind('<Button>',lambda event:moving_white(event,white_check))
-    # canvas.bind('<Button>',lambda event:moving_black(event,black_check))
+    # turn = 0
+    # if (turn == 0):
+    #     canvas.bind('<Button>',lambda event:moving_white(event,white_check))
+    #     turn = 1
+    # else:
+    #     canvas.bind('<Button>',lambda event:moving_black(event,black_check))
+    canvas.bind('<Button>',lambda event:big_move(event,board,area_moving,white_check,black_check,canvas))
     # w_turn = canvas.bind('<Button>',lambda event:moving_white(event,white_check))
-    
-        
-    
     
     window.mainloop()
 
-def moving_black(event,bc):
+turn = 0
+process = 0
+def big_move(event,a,ma,wc,bc,canvas):
+    global turn
+    if (turn == 0):
+        if (process == 0):
+            moving_white(event,wc,canvas)
+        else:
+            moving_con_white(event,a,ma,wc,canvas)  
+        
+    else:
+        if (process == 0):
+            moving_black(event,bc,canvas)
+        else:
+            moving_con_black(event,a,ma,bc,canvas)  
+        
+        
+black_move_selected = 0        
+def moving_black(event,bc,canvas):
+    global turn
+    global black_move_selected,process
     for i in range(0,len(bc)):
         if ((event.x > bc[i].x1 and event.x < bc[i].x2) and (event.y > bc[i].y1 and event.y < bc[i].y2)):
+            # a[2][3] = 2
+            # a[1][2] = 1
+            bc[i].line = "yellow"
             print(f"x:{event.x} y:{event.y}")
             print(bc[i].i,bc[i].j)
+            # if (a[wc[i].i][wc[i].j] == 2):
+            bc[i] = Black_Checker(canvas,2+(62.5*bc[i].j),2+(62.5*bc[i].i),61+(62.5*bc[i].j),61+(62.5*bc[i].i), "black", bc[i].line,bc[i].i,bc[i].j)
+            black_move_selected = i 
+            process = 1
+            break
+    
+def moving_con_black(event,a,ma,bc,canvas):
+    global black_move_selected,process,turn
+    for i in range(0,len(ma)):
+        if ((event.x > ma[i].x1 and event.x < ma[i].x2) and (event.y > ma[i].y1 and event.y < ma[i].y2)):
+            if ((ma[i].i == bc[black_move_selected].i+1) and (ma[i].j == bc[black_move_selected].j+1 or ma[i].j == bc[black_move_selected].j-1)):
+                a[ma[i].i][ma[i].j] = 2
+                a[bc[black_move_selected].i][bc[black_move_selected].j] = 1
+                for j in range(0,len(ma)):
+                    if (ma[j].i == bc[black_move_selected].i and ma[j].j == bc[black_move_selected].j):
+                        ma[j] = Use_area(canvas,0+(62.5*bc[black_move_selected].j),0+(62.5*bc[black_move_selected].i),62.5+(62.5*bc[black_move_selected].j),62.5+(62.5*bc[black_move_selected].i),bc[black_move_selected].i,bc[black_move_selected].j)
+                        break
+                bc[black_move_selected].line = "white"
+                bc[black_move_selected] = Black_Checker(canvas,2+(62.5*ma[i].j),2+(62.5*ma[i].i),61+(62.5*ma[i].j),61+(62.5*ma[i].i), "black", bc[black_move_selected].line,ma[i].i,ma[i].j)
+                process = 0
+                turn = 0
+                break
             
             
-def moving_white(event,wc):
+white_move_selected = 0            
+            
+def moving_white(event,wc,canvas):
+    global white_move_selected,process
     for i in range(0,len(wc)):
         if ((event.x > wc[i].x1 and event.x < wc[i].x2) and (event.y > wc[i].y1 and event.y < wc[i].y2)):
+            # a[2][3] = 2
+            # a[1][2] = 1
+            wc[i].line = "yellow"
             print(f"x:{event.x} y:{event.y}")
             print(wc[i].i,wc[i].j)
-            
+            # if (a[wc[i].i][wc[i].j] == 2):
+            wc[i] = White_Checker(canvas,2+(62.5*wc[i].j),2+(62.5*wc[i].i),61+(62.5*wc[i].j),61+(62.5*wc[i].i), "white", wc[i].line,wc[i].i,wc[i].j)
+            white_move_selected = i 
+            process = 1
+            break
+            #     Use_area(canvas,0+(62.5*2),0+(62.5*1),62.5+(62.5*2),62.5+(62.5*1),1,2)
+
+def moving_con_white(event,a,ma,wc,canvas):
+    global white_move_selected,process,turn
+    for i in range(0,len(ma)):
+        if ((event.x > ma[i].x1 and event.x < ma[i].x2) and (event.y > ma[i].y1 and event.y < ma[i].y2)):
+            if ((ma[i].i == wc[white_move_selected].i-1) and (ma[i].j == wc[white_move_selected].j+1 or ma[i].j == wc[white_move_selected].j-1)):
+                a[ma[i].i][ma[i].j] = 3
+                a[wc[white_move_selected].i][wc[white_move_selected].j] = 1
+                for j in range(0,len(ma)):
+                    if (ma[j].i == wc[white_move_selected].i and ma[j].j == wc[white_move_selected].j):
+                        ma[j] = Use_area(canvas,0+(62.5*wc[white_move_selected].j),0+(62.5*wc[white_move_selected].i),62.5+(62.5*wc[white_move_selected].j),62.5+(62.5*wc[white_move_selected].i),wc[white_move_selected].i,wc[white_move_selected].j)
+                        break
+                wc[white_move_selected].line = "black"
+                wc[white_move_selected] = White_Checker(canvas,2+(62.5*ma[i].j),2+(62.5*ma[i].i),61+(62.5*ma[i].j),61+(62.5*ma[i].i), "white", wc[white_move_selected].line,ma[i].i,ma[i].j)
+                process = 0
+                turn = 1
+                break
+                
 class Black_Checker(tk.Canvas):
     def __init__(self, parent,x1,y1,x2,y2,color,line,i,j):
         self.x1 = x1
